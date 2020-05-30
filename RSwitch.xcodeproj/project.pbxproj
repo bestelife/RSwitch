@@ -34,6 +34,7 @@
 		0198B9AA23197D3A003F7578 /* Running.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198B9A923197D3A003F7578 /* Running.swift */; };
 		01A4F40A23F3084E005B88C2 /* Reachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A4F40923F3084E005B88C2 /* Reachable.swift */; };
 		01A4F40C23F30DB4005B88C2 /* Associations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A4F40B23F30DB4005B88C2 /* Associations.swift */; };
+		01A7DB522481309E009E54EC /* SwiftExec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A7DB512481309E009E54EC /* SwiftExec.swift */; };
 		01B611EC232176A200432807 /* NewSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B611EB232176A200432807 /* NewSessionViewController.swift */; };
 		01D3E43A232119DD00E3BC02 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D3E439232119DD00E3BC02 /* WebViewController.swift */; };
 		01D3E43C23211B4C00E3BC02 /* RStudioServerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D3E43B23211B4C00E3BC02 /* RStudioServerAction.swift */; };
@@ -106,6 +107,7 @@
 		0198B9A923197D3A003F7578 /* Running.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Running.swift; sourceTree = "<group>"; };
 		01A4F40923F3084E005B88C2 /* Reachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachable.swift; sourceTree = "<group>"; };
 		01A4F40B23F30DB4005B88C2 /* Associations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Associations.swift; sourceTree = "<group>"; };
+		01A7DB512481309E009E54EC /* SwiftExec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftExec.swift; path = "/Users/hrbrmstr/Development/RSwitch/rswitch-cmd/SwiftExec.swift"; sourceTree = "<absolute>"; };
 		01B611EB232176A200432807 /* NewSessionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSessionViewController.swift; sourceTree = "<group>"; };
 		01BDA1A5245482CD005DC733 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01D3E439232119DD00E3BC02 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				01BDA1A5245482CD005DC733 /* Info.plist */,
+				01A7DB512481309E009E54EC /* SwiftExec.swift */,
 				01575A36245443D7004A5715 /* main.swift */,
 			);
 			path = "rswitch-cmd";
@@ -480,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01A7DB522481309E009E54EC /* SwiftExec.swift in Sources */,
 				01575A4424544F49004A5715 /* AppAlerts.swift in Sources */,
 				01575A4324544DA6004A5715 /* RVersions.swift in Sources */,
 				01575A37245443D7004A5715 /* main.swift in Sources */,
