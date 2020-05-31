@@ -8,6 +8,7 @@
 
 import Foundation
 import ArgumentParser
+import AppKit
 
 final class StandardErrorOutputStream: TextOutputStream {
   func write(_ string: String) {
@@ -35,7 +36,7 @@ func downloadAndUnpack(source : String, what : String) -> Bool {
         
         if (!(fileURL == nil) || (fileURL?.absoluteString != "")) {
                     
-          print("Installing R-devel")
+          print("Installing \(what)")
           
           do {
             let _ = try exec(program: "/usr/bin/tar", arguments: ["xzf", fileURL!.path, "-C", "/"])
@@ -52,6 +53,74 @@ func downloadAndUnpack(source : String, what : String) -> Bool {
 
         } else {
           print("Error downloading \(what) \(String(describing: error))")
+        }
+        
+      }
+      
+    }
+    
+    done.signal()
+    
+  }
+  
+  print("Starting download of \(what)")
+  
+  task.resume()
+  done.wait()
+  
+  return(err)
+
+}
+
+func downloadMountAndCopyRStudio() -> Bool {
+    
+  let what = "RStudio Desktop Latest Daily"
+  let source = "https://www.rstudio.org/download/latest/daily/desktop/mac/RStudio-latest.dmg"
+  let rsURL = URL(string: source)!
+
+  let done = DispatchSemaphore(value: 0)
+  var err = true
+
+  let task = URLSession.shared.downloadTask(with: rsURL) {
+    fileURL, response, error in
+    
+    if (error != nil) {
+      print("Error downloading \(what) \(String(describing: error))")
+    } else if (response != nil) {
+      
+      let status = (response as? HTTPURLResponse)!.statusCode
+      
+      if (status < 300) {
+        
+        if (!(fileURL == nil) || (fileURL?.absoluteString != "")) {
+                    
+          print("Installing \(what)")
+          
+          do {
+            
+            let path = fileURL!.path
+            let res = try exec(program: "/usr/bin/hdiutil", arguments: ["attach", "-plist", path])
+            
+            var propertyListFormat =  PropertyListSerialization.PropertyListFormat.xml
+            let x = try PropertyListSerialization.propertyList(from: (res.stdout?.data(using: String.Encoding.utf8))!, options: .mutableContainersAndLeaves, format: &propertyListFormat) as? [String : AnyObject]
+            
+            let y = x?["system-entities"] as? [Dictionary<String, AnyObject>]
+            let vol = ((y?[0].keys.contains("mount-point"))! ? y?[0]["mount-point"] : y?[1]["mount-point"]) as? String ?? ""
+            
+            let user = ProcessInfo.processInfo.environment["SUDO_USER"] ?? ""
+            
+            let _ = try exec(program: "/bin/mv", arguments: ["/Applications/RStudio.app", "/Users/\(user)/.Trash"])
+            let _ = try exec(program: "/bin/cp", arguments: ["-R", "\(vol)/RStudio.app", "/Applications"])
+            let _ = try exec(program: "/usr/bin/hdiutil", arguments: ["detach", vol])
+          
+            err = false
+            
+          } catch {
+             print("Error downloading/mounting/installing \(what) : \(error)")
+          }
+
+        } else {
+          print("Error downloading/mounting/installing \(what) : \(String(describing: error))")
         }
         
       }
@@ -97,7 +166,7 @@ struct RSwitch: ParsableCommand {
   func run() throws {
     
     var outputStream = StandardErrorOutputStream()
-    
+
     let targetPath = RVersions.currentVersionTarget()
     let versions = try RVersions.reloadVersions()
     
@@ -118,6 +187,17 @@ struct RSwitch: ParsableCommand {
         Darwin.exit(6)
       }
       
+      let running_rstudios = NSWorkspace.shared.runningApplications.filter {
+        $0.bundleIdentifier == "org.rstudio.RStudio"
+      }
+      
+      if (running_rstudios.count > 0) {
+        print("Please close all running RStudio applications before attempting to update RStudio.")
+        Darwin.exit(7)
+      }
+      
+      Darwin.exit(downloadMountAndCopyRStudio() ? 8 : 0)
+      
     } else if (list || (rversion == nil)) {
       
       for version in versions {
@@ -127,6 +207,8 @@ struct RSwitch: ParsableCommand {
         if (!complete) { v = version + " (incomplete)" }
         print(v)
       }
+      
+      Darwin.exit(0)
       
     } else {
       
